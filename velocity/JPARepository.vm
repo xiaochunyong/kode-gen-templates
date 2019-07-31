@@ -1,0 +1,17 @@
+#macro (low $strIn)$strIn.valueOf($strIn.charAt(0)).toLowerCase()$strIn.substring(1)#end
+###set($basePackage = "me.ely")
+package ${basePackage}.repository.jpa
+
+import ${basePackage}.domain.entity.${className}
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+
+/**
+ *
+ * @author  <a href="mailto:${email}">${user}</a>
+ * @see
+ * @since   ${date}
+ */
+@Repository
+interface ${className}Repository : JpaRepository<${className}, ${primaryKey}> {
+}

@@ -1,0 +1,77 @@
+#macro (low $strIn)$strIn.valueOf($strIn.charAt(0)).toLowerCase()$strIn.substring(1)#end
+#set($classNameCamel = "#low(${className})")
+###set($basePackage = "me.ely")
+package ${basePackage}.controller
+
+import io.swagger.annotations.*
+import ${basePackage}.domain.entity.${className}
+import ${basePackage}.domain.request.${className}SearchRequestModel
+import ${basePackage}.domain.request.${className}UpdateRequestModel
+import ${basePackage}.domain.response.ItemResponse
+import ${basePackage}.domain.response.SearchResponse
+import ${basePackage}.service.${className}Service
+import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.*
+
+/**
+ *
+ * @author  <a href="mailto:${email}">${user}</a>
+ * @see
+ * @since   ${date}
+ */
+@Api(tags=["${className} Module"])
+@RestController
+@RequestMapping("/")
+class ${className}Controller(val ${classNameCamel}Service: ${className}Service) {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+    
+    @GetMapping("/")
+    @ApiOperation(nickname = "Search${className}", value = "List ${className}")
+    fun list(model: ${className}SearchRequestModel): SearchResponse<${className}> {
+        logger.info("search ${classNameCamel} params: $model")
+        val result = ${classNameCamel}Service.search(model)
+        return SearchResponse(result.content, result.pageable.pageNumber, result.pageable.pageSize, result.totalElements)
+    }
+    
+    @GetMapping("{id}")
+    @ApiOperation(nickname = "Get${className}", value = "${className} Detail")
+    fun get(@PathVariable id: ${primaryKey}): ItemResponse<${className}> {
+        logger.info("get ${classNameCamel} params: $id")
+        val opt = ${classNameCamel}Service.findById(id)
+        if (opt.isPresent) {
+            return ItemResponse(opt.get())
+        }
+        return ResponseCode.NOT_FOUND.toResponse()
+    }
+    
+    @PostMapping("/")
+    @ApiOperation(nickname = "Create${className}", value = "Create ${className}")
+    fun create(@RequestBody model: ${className}): SimpleResponse {
+        logger.info("create ${classNameCamel} params: $model")
+        ${classNameCamel}Service.save(model)
+        return ResponseCode.SUCCESS.toResponse()
+    }
+    
+    @PutMapping("{id}")
+    @ApiOperation(nickname = "Update${className}", value = "Update ${className}")
+    fun update(@PathVariable id: ${primaryKey}, @RequestBody model: ${className}UpdateRequestModel): SimpleResponse {
+        logger.info("update ${classNameCamel} params: $id - $model")
+        val opt = ${classNameCamel}Service.findById(id)
+        if (opt.isPresent) {
+            val item = opt.get().copy(/*TODO*/)
+            ${classNameCamel}Service.save(item)
+            return ResponseCode.SUCCESS.toResponse()
+        }
+        return ResponseCode.NOT_FOUND.toResponse()
+    }
+    
+    @DeleteMapping("{id}")
+    @ApiOperation(nickname = "Delete${className}", value = "Delete ${className}")
+    fun delete(@PathVariable id: ${primaryKey}): SimpleResponse {
+        logger.info("delete ${classNameCamel} params: $id")
+        ${classNameCamel}Service.delete(id)
+        return ResponseCode.SUCCESS.toResponse()
+    }
+
+}

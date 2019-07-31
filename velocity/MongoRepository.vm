@@ -1,0 +1,18 @@
+#macro (low $strIn)$strIn.valueOf($strIn.charAt(0)).toLowerCase()$strIn.substring(1)#end
+###set($basePackage = "me.ely")
+package ${basePackage}.repository.mongo
+
+import ${basePackage}.domain.entity.${className}
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.stereotype.Repository
+
+/**
+ *
+ *
+ * @author  <a href="mailto:${email}">${user}</a>
+ * @see
+ * @since   ${date}
+ */
+@Repository
+interface ${className}Repository : MongoRepository<${className}, ${primaryKey}> {
+}
