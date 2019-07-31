@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*
  */
 @Api(tags=["${className} Module"])
 @RestController
-@RequestMapping("/")
+@RequestMapping("/${classNameCamel}")
 class ${className}Controller(val ${classNameCamel}Service: ${className}Service) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)

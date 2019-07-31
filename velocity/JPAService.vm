@@ -15,6 +15,7 @@ import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
+import kotlin.math.max
 
 /**
  *
@@ -34,8 +35,8 @@ class ${className}Service : AbstractJpaService<${className}, ${primaryKey}, ${cl
         dataCq.where(*dataPredicates)
         dataCq.orderBy(cb.desc(dataRoot.get(${className}_.createDt)))
         val typedQuery = entityManager.createQuery(dataCq)
-        typedQuery.firstResult = requestModel.pageSize!! * Math.max(requestModel.pageIndex!! - 1, 0)
-        typedQuery.maxResults = requestModel.pageSize!!
+        typedQuery.firstResult = requestModel.pageSize * max(requestModel.pageIndex - 1, 0)
+        typedQuery.maxResults = requestModel.pageSize
         val data = typedQuery.resultList
 
         val countCq = cb.createQuery(Long::class.java)
@@ -46,7 +47,7 @@ class ${className}Service : AbstractJpaService<${className}, ${primaryKey}, ${cl
 
 
 
-        return PageImpl(data, PageRequest.of(Math.max(requestModel.pageIndex!! - 1, 0), requestModel.pageSize!!, Sort(Sort.Direction.DESC, "id")), count!!)
+        return PageImpl(data, PageRequest.of(max(requestModel.pageIndex - 1, 0), requestModel.pageSize, Sort(Sort.Direction.DESC, "id")), count)
     }
 
     private fun buildSearchPredicates(requestModel: ${modelClassName}, cb: CriteriaBuilder, dataRoot: Root<${className}>): Array<Predicate> {
